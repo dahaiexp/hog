@@ -1,0 +1,122 @@
+Error during validation
+	please check values and bounds of all options
+
+Usage: ./classify_rhog [options]  infile  outfile  modelfile 
+
+Options common to config file and command line:
+  -W [ --window ]  (Default: [ 64,128 ]) (Min: [ 3,3 ])
+                                        window width,height
+  --winstride  (Default: [ 8,8 ])       window stride along x-y
+  --scaleratio  (Default: 1.04999995) (Min: 1)
+                                        scale ratio
+  --endscale                            scale-space pyramid end scale
+                                          (Default: till image size >= window 
+                                        size)
+  --startscale  (Default: 1) (Min: 1)   start scale
+  --topleft                             top-left X,Y-coordinate of descriptor 
+                                        window
+                                          (Default window is at image center )
+  --cachesize  (Default: 128) (Min: 4)  descriptor cache size (im MB) to use
+                                          NOTE: small cache size can 
+                                        drastically reduce speed
+  -v [ --verbose ]  (Default: 0) (Min: 0, Max: 9)
+                                        verbose level
+  --testlocs                            filename where to write all test or 
+                                        feature dump locations
+                                          (Format: imagename X Y Width Height)
+  -x [ --imageext ]                     image extension (valid only if 'infile'
+                                        = dir or list)
+  -m [ --svmthreshold ]  (Default: 0)   threshold on svm score
+  -t [ --threshold ]  (Default: 0.100000001)
+                                        threshold to classify
+  --no_nonmax  (Default: 0)             do not perform non maximum suppression
+  --avsize  (Default: [ 0,96 ]) (Min: [ 0,0 ])
+                                        compute image margin to add using 
+                                        average size. 0 imply do not use 
+                                        average size.
+  --margin  (Default: [ 4,4 ]) (Min: [ 0,0 ])
+                                        pixels margin at each side in 
+                                        normalized image. 0 imply do not use 
+                                        margin size.
+  --nopyramid  (Default: 0)             do not create scale space pyramid, use 
+                                        center window
+  --softmax  (Default: 0) (Min: 0, Max: 3)
+                                        transformation function method used  to
+                                        convert scores to probabilities. Values
+                                        (0=hardclip,1=sigmoid,2=softclip,3=none
+                                        ). NOTE 1: score2prob provides A,B 
+                                        parameters for sigmoid and softclip 
+                                        method. NOTE 2: (score2prob[0],svmthres
+                                        hold) provides A,B values for hardclip 
+                                        methods.
+  -p [ --score2prob ]  (Default: [ 1,0 ])
+                                        (A,B) parameters of sigmoid function 
+                                        (1+exp(A*score+B)^-1 or soft clip 
+                                        log(1+exp(A*(score-B)
+  -z [ --nonmaxsigma ]  (Default: [ 8,16,1.3 ]) (Min: [ 0,0,0 ])
+                                        smooth sigma for non-max suppression 
+                                        (x,y, scale)
+  -i [ --outimage ]                     align input image to max of classifier
+                                          (valid iff no_nonmax=1 && alignin=1) 
+                                        ELSE
+                                          mark classification result on input 
+                                        image
+  --alignin  (Default: 0)               align input image (outimage must be 
+                                        specified)
+  --alignmargin  (Default: [ 4,4 ]) (Min: [ 0,0 ])
+                                        margin to add to aligned image
+  -c [ --outhist ]                      write score histogram (for roc curve)
+  -l [ --label ]  (Default: O) (Min: N, Max: P)
+                                        show label (Default means ignore label)
+  -d [ --falsetxt ]                     output false + descriptor windows (for 
+                                        hard retraining)
+  --proc  (Default: RGB_Sqrt)           Image preprocessor and gradient 
+                                        computation method to use
+  --norm  (Default: L2Hys)              Descriptor normalizing method to use
+  -C [ --cellsize ]  (Default: [ 8,8 ]) (Min: [ 1,1 ])
+                                        cell size, position invariance 
+                                        tolerance in each cell
+  -N [ --numcell ]  (Default: [ 2,2 ]) (Min: [ 1,1 ])
+                                        number of cells in each block
+  -G [ --descstride ]  (Default: [ 8,8 ]) (Min: [ 1,1 ])
+                                        descriptor stride in window
+  -B [ --orientbin ]  (Default: 9) (Min: 1)
+                                        number of orientation bin
+  --wtscale  (Default: 2) (Min: 0)      magnitude weighting scale
+  -O [ --fullcirc ]                     take orientations in range (0-360)
+  -S [ --gscale ]  (Default: 0) (Min: 0)
+                                        gradient computation scale
+  --epsilon  (Default: 1) (Min: 0)      epsilon to add while normalizing
+  --maxvalue  (Default: 0.200000003) (Min: 0, Max: 1)
+                                        chop feature vector values > maxvalue 
+                                        after normalizing
+                                          Used iff normalizing method == 
+                                        NormL2Hys
+
+Command line options only:
+  -h [ --help ]         show help screen
+  --version             print version number and contact details
+
+Required Arguments:
+  --infile              input image file/dir/list
+  --outfile             out file
+  --modelfile           learned SVM light model file. NOTE: If value is equal 
+                        to 'defaultperson', it loads default person detector.
+
+Usage Issues:
+options 'stride', 'startscale', 'scaleratio' and 'endscale'  are valid iff 'pyramid' is true'
+  'infile'         can be an image file, a directory, or a list file.
+  'imageext'       empty string implies all listed files, otherwise images with given extension are selected
+Supported options in image preprocessor are:
+       RGB     
+       Lab     
+       RGB_Sqrt
+       Lab_Sqrt
+       RGB_Log 
+Supported options in descriptor normalizer are:
+       NoNorm
+       L1    
+       L2    
+       L1Sqrt
+       L2Hys 
+
